@@ -1,5 +1,6 @@
 package com.example.eventapp.data;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -7,6 +8,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,54 +26,53 @@ import java.sql.Statement;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String url = "jdbc:mysql://192.168.0.118:3306/eventapp";
+    /*
+    private static final String url = "jdbc:mysql://192.168.1.103:3306/eventapp";
     private static final String user = "nandesh";
     private static final String pass = "nandesh";
-    Button btnFetch,btnClear,btnInsert;
-    TextView txtData;
-    EditText nameData, emailData, passData;
-
+    */
+    Button btnLogin, btnSignUp;
+    EditText nameData, passData;
+    DBhelper db;
+    RadioGroup typegrp;
+    RadioButton usertype;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        txtData = (TextView) this.findViewById(R.id.txtData);
-        btnFetch = (Button) findViewById(R.id.btnFetch);
-        btnClear = (Button) findViewById(R.id.btnClear);
-        btnFetch.setOnClickListener(new View.OnClickListener() {
 
-            @Override
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
-                ConnectMySql connectMySql = new ConnectMySql();
-                connectMySql.execute("fetch");
-            }
-        });
-        btnClear.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                txtData.setText("");
-            }
-        });
+        btnSignUp = findViewById(R.id.signup);
 
-        nameData = findViewById(R.id.name);
-        emailData = findViewById(R.id.email);
+        nameData = findViewById(R.id.username2);
         passData = findViewById(R.id.password);
-        btnInsert = findViewById(R.id.insert);
-        btnInsert.setOnClickListener(new View.OnClickListener() {
+        btnLogin = findViewById(R.id.login);
+        db = new DBhelper(this);
+        typegrp = findViewById(R.id.type2);
+
+        btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ConnectMySql connectMySql = new ConnectMySql();
-                connectMySql.execute("insert");
-                Toast.makeText(MainActivity.this, "Insert clicked ...", Toast.LENGTH_SHORT)
-                        .show();
+                int id = typegrp.getCheckedRadioButtonId();
+                usertype = findViewById(id);
+                String type = usertype.getText().toString();
+                String username = nameData.getText().toString();
+                String password = passData.getText().toString();
+                db.checkUser(username,password,type);
+            }
+        });
+        btnSignUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), RegisterActivity.class);
+                startActivity(intent);
             }
         });
 
 
     }
 
+    /*
     private class ConnectMySql extends AsyncTask<String, Void, String> {
         String res = "";
 
@@ -141,5 +143,7 @@ public class MainActivity extends AppCompatActivity {
             txtData.setText(result);
         }
     }
+
+     */
 
 }
