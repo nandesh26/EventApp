@@ -22,6 +22,7 @@ public class DBhelper extends SQLiteOpenHelper {
         con = context;
     }
 
+    // Comments ...
     @Override
     public void onCreate(SQLiteDatabase MyDB) {
         MyDB.execSQL("create table if not exists student (id INTEGER primary key autoincrement, name TEXT, username TEXT , email TEXT, password TEXT) ");
