@@ -10,6 +10,8 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
+import java.util.Date;
+
 public class DBhelper extends SQLiteOpenHelper {
 
     public static final String DBNAME = "Event.db";
@@ -24,13 +26,32 @@ public class DBhelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase MyDB) {
         MyDB.execSQL("create table if not exists student (id INTEGER primary key autoincrement, name TEXT, username TEXT , email TEXT, password TEXT) ");
         MyDB.execSQL("create table if not exists organizer (id INTEGER primary key autoincrement, name TEXT, username TEXT , email TEXT, password TEXT) ");
-        MyDB.execSQL("create table if not exists event (id INTEGER primary key autoincrement, name TEXT, description TEXT, organizer_id INT) ");
+        MyDB.execSQL("create table if not exists event (id INTEGER primary key autoincrement, edesc TEXT, ename TEXT, estartdate TEXT, eenddate TEXT, organizer_id) ");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase MyDB, int i, int i1) {
 
     }
+
+    public Boolean insertEvent(String ename, String edesc, String estartdate, String eenddate, int id)
+    {
+        SQLiteDatabase MyDB = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("edesc", edesc);
+        contentValues.put("ename", ename);
+        contentValues.put("estartdate", estartdate);
+        contentValues.put("eenddate", eenddate);
+        contentValues.put("organizer_id", id);
+
+        Toast.makeText(con, "Inserting an Event ...", Toast.LENGTH_SHORT).show();
+
+        long result = MyDB.insert("event", null, contentValues);
+        Toast.makeText(con, "Inserting an Event ...", Toast.LENGTH_SHORT).show();
+        if (result == -1) return false;
+        else return true;
+    }
+
 
     public Boolean insertStudent(String name, String username, String email, String password, String type) {
         SQLiteDatabase MyDB = this.getWritableDatabase();
@@ -64,6 +85,7 @@ public class DBhelper extends SQLiteOpenHelper {
             if(cursor.getCount() > 0) {
                 Toast.makeText(con, " Student exists..", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(con, studentHome.class);
+
                 con.startActivity(intent);
             }
             else {
@@ -76,6 +98,8 @@ public class DBhelper extends SQLiteOpenHelper {
             if(cursor.getCount() > 0) {
                 Toast.makeText(con, " Organizer exists..", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(con, organizerHome.class);
+                cursor.moveToNext();
+               intent.putExtra("organizer_id", cursor.getString(0));
                 con.startActivity(intent);
             }
             else {
