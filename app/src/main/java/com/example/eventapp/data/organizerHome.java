@@ -1,7 +1,10 @@
 package com.example.eventapp.data;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +14,8 @@ import android.widget.Toast;
 
 import com.example.eventapp.R;
 
+import java.util.List;
+
 public class organizerHome extends AppCompatActivity {
 
     // Views ...
@@ -18,6 +23,7 @@ public class organizerHome extends AppCompatActivity {
     Button organizer_show_button;
 
     Post_Event_Fragment f1; // First fragment ...
+    Show_Events_List_Fragment f2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,9 +32,10 @@ public class organizerHome extends AppCompatActivity {
 
 
         Intent i = getIntent();
-        int organizer_id = i.getIntExtra("organizer_id", 0);
+        int organizer_id = Integer.parseInt(i.getStringExtra("organizer_id"));
 
         f1 = new Post_Event_Fragment(organizer_id);
+        f2 = new Show_Events_List_Fragment(organizer_id);
 
         // Finding views by id ...
         organizer_show_button = findViewById(R.id.organizer_show_button);
@@ -42,7 +49,20 @@ public class organizerHome extends AppCompatActivity {
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 ft.replace(R.id.organizer_frame, f1);
                 ft.commit();
-                Toast.makeText(getApplicationContext(), "New fragment", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "New fragment for posting event by organiser", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        organizer_show_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.organizer_frame, f2);
+                Bundle bd = new Bundle();
+                bd.putString("pushed-by", "organiser");
+                f2.setArguments(bd);
+                ft.commit();
+                Toast.makeText(getApplicationContext(), "New fragment for showing events for organiser", Toast.LENGTH_SHORT).show();
             }
         });
 

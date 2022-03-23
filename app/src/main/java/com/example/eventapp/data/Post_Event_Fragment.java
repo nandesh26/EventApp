@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.example.eventapp.R;
 
 import java.util.Date;
+import java.util.List;
 
 public class Post_Event_Fragment extends Fragment {
 
@@ -57,8 +58,9 @@ public class Post_Event_Fragment extends Fragment {
                 }
                 else {
                     Toast.makeText(v.getContext(), "Successfully inserted event",Toast.LENGTH_SHORT).show();
+                    Button organizer_show_button = requireActivity().findViewById(R.id.organizer_show_button);
+                    organizer_show_button.performClick();
                 }
-
             }
         });
 

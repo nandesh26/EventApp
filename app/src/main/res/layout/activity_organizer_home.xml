@@ -32,11 +32,11 @@
 
         </LinearLayout>
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/organizer_frame"
             android:layout_width="match_parent"
             android:layout_height="600dp"
-            android:orientation="vertical"></LinearLayout>
+            android:orientation="vertical"></RelativeLayout>
     </LinearLayout>
 
 </FrameLayout>

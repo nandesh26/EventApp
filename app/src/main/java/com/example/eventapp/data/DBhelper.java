@@ -10,7 +10,9 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class DBhelper extends SQLiteOpenHelper {
 
@@ -26,12 +28,113 @@ public class DBhelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase MyDB) {
         MyDB.execSQL("create table if not exists student (id INTEGER primary key autoincrement, name TEXT, username TEXT , email TEXT, password TEXT) ");
         MyDB.execSQL("create table if not exists organizer (id INTEGER primary key autoincrement, name TEXT, username TEXT , email TEXT, password TEXT) ");
-        MyDB.execSQL("create table if not exists event (id INTEGER primary key autoincrement, edesc TEXT, ename TEXT, estartdate TEXT, eenddate TEXT, organizer_id) ");
+        MyDB.execSQL("create table if not exists event (id INTEGER primary key autoincrement, edesc TEXT, ename TEXT, estartdate TEXT, eenddate TEXT, organizer_id TEXT) ");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase MyDB, int i, int i1) {
 
+    }
+
+    public List<Event> getAllEventsForOrganiser(int organiserId) {
+        SQLiteDatabase MyDB = this.getWritableDatabase();
+        Cursor cursor = MyDB.rawQuery("select * from event where organizer_id = ?", new String[] {String.valueOf(organiserId)});
+        List<Event> eventsList = new ArrayList<>();
+        if (cursor.moveToFirst()) {
+            do {
+                eventsList.add(new Event(cursor.getString(2),
+                        cursor.getString(1),
+                        cursor.getString(3),
+                        cursor.getString(4)));
+            } while (cursor.moveToNext());
+        }
+        return eventsList;
+    }
+
+    public List<Event> getAllPastEventsForStudent(int studentId) {
+        SQLiteDatabase MyDB = this.getWritableDatabase();
+        Cursor cursor = MyDB.rawQuery("select * from event where datetime(substr(eenddate, 7, 4) || '-' || substr(eenddate, 4, 2) || '-' || substr(eenddate, 1, 2) || ' ' || substr(eenddate, 12, 2) || ':' || substr(eenddate, 15, 2)) < datetime('now')", null);
+        List<Event> eventsList = new ArrayList<>();
+        if (cursor.moveToFirst()) {
+            do {
+                eventsList.add(new Event(cursor.getString(2),
+                        cursor.getString(1),
+                        cursor.getString(3),
+                        cursor.getString(4)));
+            } while (cursor.moveToNext());
+        }
+        return eventsList;
+    }
+
+    public List<Event> getAllOngoingEventsForStudent(int studentId) {
+        SQLiteDatabase MyDB = this.getWritableDatabase();
+        Cursor cursor = MyDB.rawQuery("select * from event where datetime(substr(eenddate, 7, 4) || '-' || substr(eenddate, 4, 2) || '-' || substr(eenddate, 1, 2) || ' ' || substr(eenddate, 12, 2) || ':' || substr(eenddate, 15, 2)) > datetime('now') and datetime(substr(estartdate, 7, 4) || '-' || substr(estartdate, 4, 2) || '-' || substr(estartdate, 1, 2) || ' ' || substr(estartdate, 12, 2) || ':' || substr(estartdate, 15, 2)) < datetime('now')", null);
+        List<Event> eventsList = new ArrayList<>();
+        if (cursor.moveToFirst()) {
+            do {
+                eventsList.add(new Event(cursor.getString(2),
+                        cursor.getString(1),
+                        cursor.getString(3),
+                        cursor.getString(4)));
+            } while (cursor.moveToNext());
+        }
+        return eventsList;
+    }
+    public List<Event> getAllUpcomingEventsForStudent(int studentId) {
+        SQLiteDatabase MyDB = this.getWritableDatabase();
+        Cursor cursor = MyDB.rawQuery("select * from event where datetime(substr(estartdate, 7, 4) || '-' || substr(estartdate, 4, 2) || '-' || substr(estartdate, 1, 2) || ' ' || substr(estartdate, 12, 2) || ':' || substr(estartdate, 15, 2)) > datetime('now')", null);
+        List<Event> eventsList = new ArrayList<>();
+        if (cursor.moveToFirst()) {
+            do {
+                eventsList.add(new Event(cursor.getString(2),
+                        cursor.getString(1),
+                        cursor.getString(3),
+                        cursor.getString(4)));
+            } while (cursor.moveToNext());
+        }
+        return eventsList;
+    }
+    public List<Event> getRegisteredPastEventsForStudent(int studentId) {
+        SQLiteDatabase MyDB = this.getWritableDatabase();
+        Cursor cursor = MyDB.rawQuery("select * from event", null);
+        List<Event> eventsList = new ArrayList<>();
+        if (cursor.moveToFirst()) {
+            do {
+                eventsList.add(new Event(cursor.getString(2),
+                        cursor.getString(1),
+                        cursor.getString(3),
+                        cursor.getString(4)));
+            } while (cursor.moveToNext());
+        }
+        return eventsList;
+    }
+    public List<Event> getRegisteredOngoingEventsForStudent(int studentId) {
+        SQLiteDatabase MyDB = this.getWritableDatabase();
+        Cursor cursor = MyDB.rawQuery("select * from event", null);
+        List<Event> eventsList = new ArrayList<>();
+        if (cursor.moveToFirst()) {
+            do {
+                eventsList.add(new Event(cursor.getString(2),
+                        cursor.getString(1),
+                        cursor.getString(3),
+                        cursor.getString(4)));
+            } while (cursor.moveToNext());
+        }
+        return eventsList;
+    }
+    public List<Event> getRegisteredUpcomingEventsForStudent(int studentId) {
+        SQLiteDatabase MyDB = this.getWritableDatabase();
+        Cursor cursor = MyDB.rawQuery("select * from event", null);
+        List<Event> eventsList = new ArrayList<>();
+        if (cursor.moveToFirst()) {
+            do {
+                eventsList.add(new Event(cursor.getString(2),
+                        cursor.getString(1),
+                        cursor.getString(3),
+                        cursor.getString(4)));
+            } while (cursor.moveToNext());
+        }
+        return eventsList;
     }
 
     public Boolean insertEvent(String ename, String edesc, String estartdate, String eenddate, int id)
@@ -85,7 +188,8 @@ public class DBhelper extends SQLiteOpenHelper {
             if(cursor.getCount() > 0) {
                 Toast.makeText(con, " Student exists..", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(con, studentHome.class);
-
+                cursor.moveToNext();
+                intent.putExtra("student_id", cursor.getString(0));
                 con.startActivity(intent);
             }
             else {
@@ -99,7 +203,7 @@ public class DBhelper extends SQLiteOpenHelper {
                 Toast.makeText(con, " Organizer exists..", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(con, organizerHome.class);
                 cursor.moveToNext();
-               intent.putExtra("organizer_id", cursor.getString(0));
+                intent.putExtra("organizer_id", cursor.getString(0));
                 con.startActivity(intent);
             }
             else {
