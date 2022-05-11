@@ -36,6 +36,18 @@ public class DBhelper extends SQLiteOpenHelper {
 
     }
 
+    public String getOrganizerInfo(int organiserId) {
+        SQLiteDatabase MyDB = this.getWritableDatabase();
+        Cursor cursor = MyDB.rawQuery("select name, email from organizer where organizer_id = ?", new String[] {String.valueOf(organiserId)});
+        String org_info = "";
+        if (cursor.moveToFirst()) {
+            do {
+                org_info = cursor.getString(1) + " " + cursor.getString(2);
+            } while (cursor.moveToNext());
+        }
+        return org_info;
+    }
+
     public List<Event> getAllEventsForOrganiser(int organiserId) {
         SQLiteDatabase MyDB = this.getWritableDatabase();
         Cursor cursor = MyDB.rawQuery("select * from event where organizer_id = ?", new String[] {String.valueOf(organiserId)});
@@ -45,7 +57,8 @@ public class DBhelper extends SQLiteOpenHelper {
                 eventsList.add(new Event(cursor.getString(2),
                         cursor.getString(1),
                         cursor.getString(3),
-                        cursor.getString(4)));
+                        cursor.getString(4),
+                        cursor.getString(5)));
             } while (cursor.moveToNext());
         }
         return eventsList;

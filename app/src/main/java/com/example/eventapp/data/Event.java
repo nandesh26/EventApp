@@ -8,6 +8,15 @@ public class Event implements Parcelable {
     private String description;
     private String startDate;
     private String endDate;
+    private String organizer_id = "";
+
+    public Event(String name, String description, String startDate, String endDate, String org_id) {
+        this.name = name;
+        this.description = description;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        organizer_id = org_id;
+    }
 
     public Event(String name, String description, String startDate, String endDate) {
         this.name = name;
@@ -66,6 +75,8 @@ public class Event implements Parcelable {
     public String getEndDate() {
         return endDate;
     }
+
+    public String getOrganizer_id() { return organizer_id; }
 
     @Override
     public String toString() {
