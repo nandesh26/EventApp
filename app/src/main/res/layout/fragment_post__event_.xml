@@ -13,37 +13,67 @@
 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
         android:layout_marginStart="10dp"
+        android:layout_marginTop="25dp"
         android:layout_marginEnd="10dp"
 
         android:ems="10"
         android:hint="Event Name"
         android:inputType="textPersonName" />
 
-    <EditText
-        android:id="@+id/estartdate"
-
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
+        android:orientation="horizontal">
 
-        android:ems="10"
-        android:hint="Event start date"
-        android:inputType="textPersonName" />
+        <Button
+            android:id="@+id/startDateBtn"
+            style="?android:spinnerStyle"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="JAN 01 2020"
+            android:textColor="@color/black"
+            android:textSize="30sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView" />
 
-    <EditText
-        android:id="@+id/eenddate"
+        <Button
+            android:id="@+id/startTimeBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="start time" />
 
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
+        android:orientation="horizontal">
 
-        android:ems="10"
-        android:hint="Event end date"
-        android:inputType="textPersonName" />
+        <Button
+            android:id="@+id/endDateBtn"
+            style="?android:spinnerStyle"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="JAN 01 2020"
+            android:textColor="@color/black"
+            android:textSize="30sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+        <Button
+            android:id="@+id/endTimeBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="end time" />
+
+    </LinearLayout>
 
     <EditText
         android:id="@+id/edesc"
@@ -56,17 +86,19 @@
         android:ems="10"
         android:hint="Event description"
         android:inputType="textPersonName"
-        android:scrollHorizontally="false"
         android:maxLength="2000"
-        android:maxLines="4"/>
+        android:maxLines="4"
+        android:scrollHorizontally="false" />
 
     <Button
         android:id="@+id/epostbutton"
 
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
         android:layout_gravity="center_horizontal"
+        android:layout_marginTop="25dp"
 
         android:text="@string/post" />
+
+
 </LinearLayout>
