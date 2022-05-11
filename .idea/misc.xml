@@ -4,7 +4,11 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/nande/AndroidStudioProjects/EventApp/EventApp/app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="..\:/Users/nande/AndroidStudioProjects/EventApp/EventApp/app/src/main/res/layout/activity_register.xml" value="0.25" />
         <entry key="..\:/Users/nande/AndroidStudioProjects/EventApp/EventApp/app/src/main/res/layout/fragment_post__event_.xml" value="0.25" />
+        <entry key="..\:/Users/nande/AndroidStudioProjects/EventApp/EventApp/app/src/main/res/layout/fragment_show__events__list_.xml" value="0.25" />
+        <entry key="..\:/Users/nande/AndroidStudioProjects/EventApp/EventApp/app/src/main/res/layout/organiser_event_item.xml" value="0.25" />
+        <entry key="..\:/Users/nande/AndroidStudioProjects/EventApp/EventApp/app/src/main/res/layout/student_event_item.xml" value="0.25" />
       </map>
     </option>
   </component>

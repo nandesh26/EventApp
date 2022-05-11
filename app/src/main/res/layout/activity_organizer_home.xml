@@ -14,29 +14,42 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#EEEEEE"
+            android:padding="25dp" >
 
             <Button
                 android:id="@+id/organizer_post_button"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+
                 android:elevation="0dp"
                 android:text="Post an Event" />
 
             <Button
                 android:id="@+id/organizer_show_button"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+
                 android:text="Show Events" />
 
         </LinearLayout>
 
         <RelativeLayout
             android:id="@+id/organizer_frame"
+
             android:layout_width="match_parent"
             android:layout_height="600dp"
-            android:orientation="vertical"></RelativeLayout>
+
+            android:orientation="vertical" />
+
     </LinearLayout>
 
 </FrameLayout>

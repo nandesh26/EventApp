@@ -165,13 +165,13 @@ public class DBhelper extends SQLiteOpenHelper {
         contentValues.put("password", password);
         Toast.makeText(con, "usertype is "+type, Toast.LENGTH_SHORT).show();
 
-        if(type.equals("student")) {
+        if(type.equals("Student")) {
             long result = MyDB.insert("student", null, contentValues);
             Toast.makeText(con, "inserting in student...", Toast.LENGTH_SHORT).show();
             if (result == -1) return false;
             else return true;
         }
-        else if(type.equals("organizer")) {
+        else if(type.equals("Organizer")) {
             long result = MyDB.insert("organizer", null, contentValues);
             if (result == -1) return false;
             else return true;
@@ -183,7 +183,7 @@ public class DBhelper extends SQLiteOpenHelper {
 
     public void checkUser(String username, String password, String type) {
         SQLiteDatabase MyDB = this.getWritableDatabase();
-        if(type.equals("student")) {
+        if(type.equals("Student")) {
             Cursor cursor = MyDB.rawQuery("select * from student where username = ? and password = ?", new String[] {username, password});
             if(cursor.getCount() > 0) {
                 Toast.makeText(con, " Student exists..", Toast.LENGTH_SHORT).show();
@@ -197,7 +197,7 @@ public class DBhelper extends SQLiteOpenHelper {
             }
 
         }
-       else if(type.equals("organizer")) {
+       else if(type.equals("Organizer")) {
             Cursor cursor = MyDB.rawQuery("select * from organizer where username = ? and password = ?", new String[] {username, password});
             if(cursor.getCount() > 0) {
                 Toast.makeText(con, " Organizer exists..", Toast.LENGTH_SHORT).show();
