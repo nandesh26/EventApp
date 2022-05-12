@@ -105,7 +105,7 @@ public class studentHome extends AppCompatActivity {
         bd.putString("pushed-by", "student");
         bd.putBoolean("registered-events-switch-status", registeredEventsSwitch.isChecked());
         bd.putString("event-timeline", timeline);
-        Show_Events_List_Fragment f = new Show_Events_List_Fragment(student.getUsername());
+        Show_Events_List_Fragment f = new Show_Events_List_Fragment(student.getUsername(), getApplicationContext());
         f.setArguments(bd);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.student_events_list_fragment_view, f);

@@ -1,6 +1,7 @@
 package com.example.eventapp.data;
 
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -37,7 +38,10 @@ public class Show_Events_List_Fragment extends Fragment {
 
     FirebaseFirestore fireDb;
 
-    Show_Events_List_Fragment(String user_id) {
+    Context context;
+
+    Show_Events_List_Fragment(String user_id, Context context) {
+        this.context = context;
         this.user_id = user_id;
     }
 
@@ -88,7 +92,7 @@ public class Show_Events_List_Fragment extends Fragment {
 
                     adapter.setEventsList(filteredEventsList);
                     eventsListRecView.setAdapter(adapter);
-                    eventsListRecView.setLayoutManager(new LinearLayoutManager(requireContext(),
+                    eventsListRecView.setLayoutManager(new LinearLayoutManager(context,
                             LinearLayoutManager.VERTICAL,
                             false));
                     return false;
@@ -153,7 +157,7 @@ public class Show_Events_List_Fragment extends Fragment {
                         eventsList = orgEventsList;
                         org_adapter.setEventsList(orgEventsList);
                         eventsListRecView.setAdapter(org_adapter);
-                        eventsListRecView.setLayoutManager(new LinearLayoutManager(requireContext(),
+                        eventsListRecView.setLayoutManager(new LinearLayoutManager(context,
                                 LinearLayoutManager.VERTICAL,
                                 false));
                     } else {
@@ -176,7 +180,7 @@ public class Show_Events_List_Fragment extends Fragment {
                         eventsList = res;
                         adapter.setEventsList(res);
                         eventsListRecView.setAdapter(adapter);
-                        eventsListRecView.setLayoutManager(new LinearLayoutManager(requireContext(),
+                        eventsListRecView.setLayoutManager(new LinearLayoutManager(context,
                                 LinearLayoutManager.VERTICAL,
                                 false));
                     } else {
@@ -200,7 +204,7 @@ public class Show_Events_List_Fragment extends Fragment {
                         eventsList = res;
                         adapter.setEventsList(res);
                         eventsListRecView.setAdapter(adapter);
-                        eventsListRecView.setLayoutManager(new LinearLayoutManager(requireContext(),
+                        eventsListRecView.setLayoutManager(new LinearLayoutManager(context,
                                 LinearLayoutManager.VERTICAL,
                                 false));
                     } else {
@@ -231,8 +235,8 @@ public class Show_Events_List_Fragment extends Fragment {
                                             Event event = doc.toObject(Event.class);
                                             resMore.add(event);
                                         }
-                                        System.out.println(resMore);
-                                        System.out.println(resLess);
+//                                        System.out.println(resMore);
+//                                        System.out.println(resLess);
                                         for (Event event : resLess) {
                                             if (resMore.contains(event)) {
                                                 res.add(event);
@@ -241,7 +245,7 @@ public class Show_Events_List_Fragment extends Fragment {
                                         eventsList = res;
                                         adapter.setEventsList(res);
                                         eventsListRecView.setAdapter(adapter);
-                                        eventsListRecView.setLayoutManager(new LinearLayoutManager(requireContext(),
+                                        eventsListRecView.setLayoutManager(new LinearLayoutManager(context,
                                                 LinearLayoutManager.VERTICAL,
                                                 false));
                                     } else {
@@ -269,7 +273,7 @@ public class Show_Events_List_Fragment extends Fragment {
                         eventsList = res;
                         adapter.setEventsList(res);
                         eventsListRecView.setAdapter(adapter);
-                        eventsListRecView.setLayoutManager(new LinearLayoutManager(requireContext(),
+                        eventsListRecView.setLayoutManager(new LinearLayoutManager(context,
                                 LinearLayoutManager.VERTICAL,
                                 false));
                     } else {

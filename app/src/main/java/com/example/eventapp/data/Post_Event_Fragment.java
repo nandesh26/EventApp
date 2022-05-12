@@ -154,23 +154,29 @@ public class Post_Event_Fragment extends Fragment {
             try {
                 Date startDateFormatted = (new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.ENGLISH)).parse(startDate + " " + startTime);
                 Date endDateFormatted = (new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.ENGLISH)).parse(endDate + " " + endTime);
-                System.out.println(startDateFormatted + ", " + endDateFormatted);
-                Event event = new Event(ename.getText().toString(),
-                        edesc.getText().toString(),
-                        new Timestamp(startDateFormatted),
-                        new Timestamp(endDateFormatted),
-                        user_id);
+                if (startDateFormatted.compareTo(endDateFormatted) >= 0) {
+                    Toast.makeText(requireContext(), "End Date should be after the start date", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    System.out.println(startDateFormatted + ", " + endDateFormatted);
+                    Event event = new Event(ename.getText().toString(),
+                            edesc.getText().toString(),
+                            new Timestamp(startDateFormatted),
+                            new Timestamp(endDateFormatted),
+                            user_id);
 
-                fireDb.collection("Event")
-                        .add(event)
-                        .addOnSuccessListener(documentReference -> {
-                            Toast.makeText(requireContext(), "Event added successfully", Toast.LENGTH_SHORT).show();
-                            Button organizer_show_button = requireActivity().findViewById(R.id.organizer_show_button);
-                            organizer_show_button.performClick();
-                        })
-                        .addOnFailureListener(e -> {
-                            Toast.makeText(requireContext(), "Error adding event", Toast.LENGTH_SHORT).show();
-                        });
+                    fireDb.collection("Event")
+                            .document(event.getName())
+                            .set(event)
+                            .addOnSuccessListener(documentReference -> {
+                                Toast.makeText(requireContext(), "Event added successfully", Toast.LENGTH_SHORT).show();
+                                Button organizer_show_button = requireActivity().findViewById(R.id.organizer_show_button);
+                                organizer_show_button.performClick();
+                            })
+                            .addOnFailureListener(e -> {
+                                Toast.makeText(requireContext(), "Error adding event", Toast.LENGTH_SHORT).show();
+                            });
+                }
             } catch (ParseException e) {
                 e.printStackTrace();
             }

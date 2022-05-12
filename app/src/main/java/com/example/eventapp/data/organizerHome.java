@@ -39,7 +39,7 @@ public class organizerHome extends AppCompatActivity {
         organizer = i.getParcelableExtra("organizer");
 
         f1 = new Post_Event_Fragment(organizer.getUsername());
-        f2 = new Show_Events_List_Fragment(organizer.getUsername());
+        f2 = new Show_Events_List_Fragment(organizer.getUsername(), getApplicationContext());
 
         // Finding views by id ...
         organizer_show_button = findViewById(R.id.organizer_show_button);
