@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/Student_home_parent_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -33,40 +34,39 @@
         android:id="@+id/student_events_sections_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_weight="0.1"
         android:background="#EEEEEE"
->
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/student_past_events_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Past"
             android:layout_margin="10dp"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:text="Past" />
 
         <Button
             android:id="@+id/student_ongoing_events_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ongoing"
             android:layout_margin="10dp"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:text="Ongoing" />
 
         <Button
             android:id="@+id/student_upcoming_events_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="upcoming"
             android:layout_margin="10dp"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:text="upcoming" />
     </LinearLayout>
 
     <RelativeLayout
         android:id="@+id/student_events_list_fragment_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="8"/>
+        android:layout_weight="8" />
 
 </LinearLayout>

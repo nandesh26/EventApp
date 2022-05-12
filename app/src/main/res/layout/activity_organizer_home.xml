@@ -20,6 +20,14 @@
             android:padding="25dp" >
 
             <Button
+                android:id="@+id/organizer_scanner_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:text="scan" />
+
+            <Button
                 android:id="@+id/organizer_post_button"
 
                 android:layout_width="match_parent"

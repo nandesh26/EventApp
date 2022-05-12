@@ -1,7 +1,6 @@
 package com.example.eventapp.data;
 
 
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,10 +9,10 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventapp.R;
+import com.example.eventapp.data.Database.Event;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,11 +37,11 @@ public class OrganiserEventsListAdapter extends RecyclerView.Adapter<OrganiserEv
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.eventId.setText(String.valueOf(position + 1));
+        holder.eventId.setText((position + 1) + ". ");
         holder.eventName.setText(eventsList.get(position).getName());
         holder.eventDescription.setText(eventsList.get(position).getDescription());
-        holder.eventStartDate.setText(eventsList.get(position).getStartDate());
-        holder.eventEndDate.setText(eventsList.get(position).getEndDate());
+        holder.eventStartDate.setText(eventsList.get(position).getStartDate().toDate().toString());
+        holder.eventEndDate.setText(eventsList.get(position).getEndDate().toDate().toString());
 
 //        Bundle bundle = new Bundle();
 //        bundle.putInt("newsIndex", position);

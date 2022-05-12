@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "785754424219",
+    "project_id": "eventapp-ceef7",
+    "storage_bucket": "eventapp-ceef7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:785754424219:android:e82182e857e540f9c0d73e",
+        "android_client_info": {
+          "package_name": "com.example.eventapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "785754424219-4oc323lav6cqdtpsrb2bondt3292iju9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBoUfyGo4TVNetQcJpxCJRqk9kAUpCzAVs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "785754424219-4oc323lav6cqdtpsrb2bondt3292iju9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
