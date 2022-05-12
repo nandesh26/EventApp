@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,12 +26,24 @@ import com.google.zxing.qrcode.QRCodeWriter;
 
 public class EventPassFragment extends Fragment {
 
+    private static final String TAG = "EventPassFragment";
+
     private ImageView qrCodeIV;
     Bitmap bitmap;
 
+    String eventId, userName;
+
     public EventPassFragment() {
+        this.eventId =  "";
+        this.userName = "";
     }
 
+    public EventPassFragment(String eventId, String userName) {
+        this.eventId = eventId;
+        this.userName = userName;
+
+        Log.i(TAG, "EventPassFragment: " + eventId + ", " + userName);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -46,7 +59,7 @@ public class EventPassFragment extends Fragment {
         qrCodeIV = v.findViewById(R.id.imageView);
 
         try {
-            Bitmap bimg = encodeAsBitmap("Hello this is qr code");
+            Bitmap bimg = encodeAsBitmap(eventId + userName);
             qrCodeIV.setImageBitmap(bimg);
         } catch (WriterException e) {
             e.printStackTrace();

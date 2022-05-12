@@ -28,7 +28,6 @@ import java.util.Date;
 import java.util.List;
 
 
-
 public class Show_Events_List_Fragment extends Fragment {
     String user_id;
     SearchView searchView;
@@ -38,8 +37,7 @@ public class Show_Events_List_Fragment extends Fragment {
 
     FirebaseFirestore fireDb;
 
-    Show_Events_List_Fragment(String user_id)
-    {
+    Show_Events_List_Fragment(String user_id) {
         this.user_id = user_id;
     }
 
@@ -61,8 +59,7 @@ public class Show_Events_List_Fragment extends Fragment {
             OrganiserEventsListAdapter org_adapter = new OrganiserEventsListAdapter((FragmentActivity) requireActivity());
 //            DBhelper orgdbHelp = new DBhelper(fragmentView.getContext());
             updateOrgEventsList(user_id, org_adapter, eventsListRecView);
-        }
-        else if (bd.getString("pushed-by").equals("student")) {
+        } else if (bd.getString("pushed-by").equals("student")) {
             searchView = requireActivity().findViewById(R.id.search);
             RecyclerView eventsListRecView = fragmentView.findViewById(R.id.events_list_Rec_View);
             adapter = new StudentEventsListAdapter((FragmentActivity) requireActivity(), user_id);
@@ -80,7 +77,7 @@ public class Show_Events_List_Fragment extends Fragment {
 
                     List<Event> filteredEventsList = new ArrayList<Event>();
                     String event_info;
-                    for(Event event: eventsList) {
+                    for (Event event : eventsList) {
                         event_info = event.getName().toLowerCase() + " " + event.getDescription().toLowerCase() + " "
                                 + event.getStartDate().toDate() + " " + event.getEndDate().toDate();
 
@@ -110,8 +107,7 @@ public class Show_Events_List_Fragment extends Fragment {
                     System.out.println(isRegisteredEventsSwitchActivated + " " + eventTimeLine);
                     updateStudentEventsList(adapter, eventsListRecView);
                 }
-            }
-            else if (eventTimeLine.equals("past")) {
+            } else if (eventTimeLine.equals("past")) {
                 if (!isRegisteredEventsSwitchActivated) {
                     System.out.println(isRegisteredEventsSwitchActivated + " " + eventTimeLine);
                     updateAllPastStudentEventsList(adapter, eventsListRecView);
@@ -119,23 +115,19 @@ public class Show_Events_List_Fragment extends Fragment {
                     System.out.println(isRegisteredEventsSwitchActivated + " " + eventTimeLine);
                     updateAllPastStudentEventsList(adapter, eventsListRecView);
                 }
-            }
-            else if (eventTimeLine.equals("ongoing")) {
+            } else if (eventTimeLine.equals("ongoing")) {
                 if (!isRegisteredEventsSwitchActivated) {
                     System.out.println(isRegisteredEventsSwitchActivated + " " + eventTimeLine);
                     updateAllOngoingStudentEventsList(adapter, eventsListRecView);
-                }
-                else {
+                } else {
                     System.out.println(isRegisteredEventsSwitchActivated + " " + eventTimeLine);
                     updateAllOngoingStudentEventsList(adapter, eventsListRecView);
                 }
-            }
-            else if (eventTimeLine.equals("upcoming")) {
+            } else if (eventTimeLine.equals("upcoming")) {
                 if (!isRegisteredEventsSwitchActivated) {
                     System.out.println(isRegisteredEventsSwitchActivated + " " + eventTimeLine);
                     updateAllUpcomingStudentEventsList(adapter, eventsListRecView);
-                }
-                else {
+                } else {
                     System.out.println(isRegisteredEventsSwitchActivated + " " + eventTimeLine);
                     updateAllUpcomingStudentEventsList(adapter, eventsListRecView);
                 }
@@ -151,24 +143,23 @@ public class Show_Events_List_Fragment extends Fragment {
                 .whereEqualTo("organizer_id", user_id)
                 .get()
                 .addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
+                    if (task.isSuccessful()) {
 //                System.out.println("task successful");
-                for (QueryDocumentSnapshot doc: task.getResult()) {
+                        for (QueryDocumentSnapshot doc : task.getResult()) {
 //                    System.out.println("in for loop");
-                    Event event = doc.toObject(Event.class);
-                    orgEventsList.add(event);
-                }
-                eventsList = orgEventsList;
-                org_adapter.setEventsList(orgEventsList);
-                eventsListRecView.setAdapter(org_adapter);
-                eventsListRecView.setLayoutManager(new LinearLayoutManager(requireContext(),
-                        LinearLayoutManager.VERTICAL,
-                        false));
-            }
-            else {
-                Toast.makeText(requireContext(), "Error getting events", Toast.LENGTH_SHORT).show();
-            }
-        });
+                            Event event = doc.toObject(Event.class);
+                            orgEventsList.add(event);
+                        }
+                        eventsList = orgEventsList;
+                        org_adapter.setEventsList(orgEventsList);
+                        eventsListRecView.setAdapter(org_adapter);
+                        eventsListRecView.setLayoutManager(new LinearLayoutManager(requireContext(),
+                                LinearLayoutManager.VERTICAL,
+                                false));
+                    } else {
+                        Toast.makeText(requireContext(), "Error getting events", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     private void updateStudentEventsList(StudentEventsListAdapter adapter, RecyclerView eventsListRecView) {
@@ -178,7 +169,7 @@ public class Show_Events_List_Fragment extends Fragment {
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        for (QueryDocumentSnapshot doc: task.getResult()) {
+                        for (QueryDocumentSnapshot doc : task.getResult()) {
                             Event event = doc.toObject(Event.class);
                             res.add(event);
                         }
@@ -188,8 +179,7 @@ public class Show_Events_List_Fragment extends Fragment {
                         eventsListRecView.setLayoutManager(new LinearLayoutManager(requireContext(),
                                 LinearLayoutManager.VERTICAL,
                                 false));
-                    }
-                    else {
+                    } else {
                         Toast.makeText(requireContext(), "Error getting events", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -203,7 +193,7 @@ public class Show_Events_List_Fragment extends Fragment {
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        for (QueryDocumentSnapshot doc: task.getResult()) {
+                        for (QueryDocumentSnapshot doc : task.getResult()) {
                             Event event = doc.toObject(Event.class);
                             res.add(event);
                         }
@@ -213,8 +203,7 @@ public class Show_Events_List_Fragment extends Fragment {
                         eventsListRecView.setLayoutManager(new LinearLayoutManager(requireContext(),
                                 LinearLayoutManager.VERTICAL,
                                 false));
-                    }
-                    else {
+                    } else {
                         Toast.makeText(requireContext(), "Error getting events", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -230,7 +219,7 @@ public class Show_Events_List_Fragment extends Fragment {
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        for (QueryDocumentSnapshot doc: task.getResult()) {
+                        for (QueryDocumentSnapshot doc : task.getResult()) {
                             Event event = doc.toObject(Event.class);
                             resLess.add(event);
                         }
@@ -238,13 +227,13 @@ public class Show_Events_List_Fragment extends Fragment {
                                 .get()
                                 .addOnCompleteListener(task1 -> {
                                     if (task1.isSuccessful()) {
-                                        for (QueryDocumentSnapshot doc: task1.getResult()) {
+                                        for (QueryDocumentSnapshot doc : task1.getResult()) {
                                             Event event = doc.toObject(Event.class);
                                             resMore.add(event);
                                         }
                                         System.out.println(resMore);
                                         System.out.println(resLess);
-                                        for (Event event: resLess) {
+                                        for (Event event : resLess) {
                                             if (resMore.contains(event)) {
                                                 res.add(event);
                                             }
@@ -255,13 +244,11 @@ public class Show_Events_List_Fragment extends Fragment {
                                         eventsListRecView.setLayoutManager(new LinearLayoutManager(requireContext(),
                                                 LinearLayoutManager.VERTICAL,
                                                 false));
-                                    }
-                                    else {
+                                    } else {
                                         Toast.makeText(requireContext(), "Error getting events", Toast.LENGTH_SHORT).show();
                                     }
                                 });
-                    }
-                    else {
+                    } else {
                         Toast.makeText(requireContext(), "Error getting events", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -275,7 +262,7 @@ public class Show_Events_List_Fragment extends Fragment {
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        for (QueryDocumentSnapshot doc: task.getResult()) {
+                        for (QueryDocumentSnapshot doc : task.getResult()) {
                             Event event = doc.toObject(Event.class);
                             res.add(event);
                         }
@@ -285,8 +272,7 @@ public class Show_Events_List_Fragment extends Fragment {
                         eventsListRecView.setLayoutManager(new LinearLayoutManager(requireContext(),
                                 LinearLayoutManager.VERTICAL,
                                 false));
-                    }
-                    else {
+                    } else {
                         Toast.makeText(requireContext(), "Error getting events", Toast.LENGTH_SHORT).show();
                     }
                 });
