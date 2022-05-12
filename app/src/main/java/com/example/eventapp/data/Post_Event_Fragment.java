@@ -18,8 +18,15 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.eventapp.R;
+import com.example.eventapp.data.Database.Event;
+import com.example.eventapp.data.Database.Organizer;
+import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 public class Post_Event_Fragment extends Fragment {
@@ -30,17 +37,20 @@ public class Post_Event_Fragment extends Fragment {
     Button epostbutton, startBtn, endBtn, startTimebtn, endTimebtn;
     DBhelper dbhelp;
     String startDate, endDate, startTime, endTime;
-    int id, s_id=0, e_id=0, hour, minute;
+    int s_id=0, e_id=0, hour, minute;
 
-    Post_Event_Fragment(int id)
-    {
-        this.id = id;
+    String user_id;
+    FirebaseFirestore fireDb;
+
+    Post_Event_Fragment(String user_id) {
+        this.user_id = user_id;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        }
+        fireDb = FirebaseFirestore.getInstance();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -57,114 +67,121 @@ public class Post_Event_Fragment extends Fragment {
         startTimebtn = v.findViewById(R.id.startTimeBtn);
         endTimebtn = v.findViewById(R.id.endTimeBtn);
         initDatePicker(v);
-        startBtn.setText(getTodaysDate());
-        endBtn.setText(getTodaysDate());
+        startBtn.setText(getTodayDate());
+        endBtn.setText(getTodayDate());
 
-        startBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                s_id = 1;
-                datePickerDialog.show();
-            }
+        startBtn.setOnClickListener(view -> {
+            s_id = 1;
+            datePickerDialog.show();
         });
 
-        endBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                e_id = 1;
-                datePickerDialog.show();
-            }
+        endBtn.setOnClickListener(view -> {
+            e_id = 1;
+            datePickerDialog.show();
         });
 
-        startTimebtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener()
-                {
-                    @Override
-                    public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute)
-                    {   String h, m;
-                        hour = selectedHour;
-                        minute = selectedMinute;
-                        if (hour<10) {
-                            h = "0" + String.valueOf(hour);
-                        }
-                        else {
-                            h = String.valueOf(hour);
-                        }
-                        if (minute<10) {
-                            m = "0" + String.valueOf(minute);
-                        }
-                        else{
-                            m = String.valueOf(minute);
-                        }
-                        startTime = h + ":" + m;
-                        startTimebtn.setText(String.format(Locale.getDefault(), "%02d:%02d",hour, minute));
+        startTimebtn.setOnClickListener(view -> {
+            TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener()
+            {
+                @Override
+                public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute)
+                {   String h, m;
+                    hour = selectedHour;
+                    minute = selectedMinute;
+                    if (hour<10) {
+                        h = "0" + hour;
                     }
-                };
-
-                // int style = AlertDialog.THEME_HOLO_DARK;
-
-                TimePickerDialog timePickerDialog = new TimePickerDialog(v.getContext(), /*style,*/ onTimeSetListener, hour, minute, true);
-
-                timePickerDialog.setTitle("Select Start Time");
-                timePickerDialog.show();
-
-            }
-        });
-
-        endTimebtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener()
-                {
-                    @Override
-                    public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute)
-                    {
-                        String h, m;
-                        hour = selectedHour;
-                        minute = selectedMinute;
-                        if (hour<10) {
-                            h = "0" + String.valueOf(hour);
-                        }
-                        else {
-                            h = String.valueOf(hour);
-                        }
-                        if (minute<10) {
-                            m = "0" + String.valueOf(minute);
-                        }
-                        else{
-                            m = String.valueOf(minute);
-                        }
-                        endTime = h + ":" + m;
-                        endTimebtn.setText(String.format(Locale.getDefault(), "%02d:%02d",hour, minute));
+                    else {
+                        h = String.valueOf(hour);
                     }
-                };
+                    if (minute<10) {
+                        m = "0" + minute;
+                    }
+                    else{
+                        m = String.valueOf(minute);
+                    }
+                    startTime = h + ":" + m;
+                    startTimebtn.setText(String.format(Locale.getDefault(), "%02d:%02d",hour, minute));
+                }
+            };
 
-                // int style = AlertDialog.THEME_HOLO_DARK;
+            // int style = AlertDialog.THEME_HOLO_DARK;
 
-                TimePickerDialog timePickerDialog = new TimePickerDialog(v.getContext(), /*style,*/ onTimeSetListener, hour, minute, true);
+            TimePickerDialog timePickerDialog = new TimePickerDialog(v.getContext(), /*style,*/ onTimeSetListener, hour, minute, true);
 
-                timePickerDialog.setTitle("Select End Time");
-                timePickerDialog.show();
-            }
+            timePickerDialog.setTitle("Select Start Time");
+            timePickerDialog.show();
+
         });
 
-        epostbutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startDate = startBtn.getText().toString();
-                endDate = endBtn.getText().toString();
-                boolean res = dbhelp.insertEvent(ename.getText().toString(), edesc.getText().toString(), startDate + " " + startTime, endDate + " " + endTime, id);
-                if(!res) {
-                    Toast.makeText(v.getContext(), "Error in inserting",Toast.LENGTH_SHORT).show();
+        endTimebtn.setOnClickListener(view -> {
+            TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener()
+            {
+                @Override
+                public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute)
+                {
+                    String h, m;
+                    hour = selectedHour;
+                    minute = selectedMinute;
+                    if (hour<10) {
+                        h = "0" + String.valueOf(hour);
+                    }
+                    else {
+                        h = String.valueOf(hour);
+                    }
+                    if (minute<10) {
+                        m = "0" + String.valueOf(minute);
+                    }
+                    else{
+                        m = String.valueOf(minute);
+                    }
+                    endTime = h + ":" + m;
+                    endTimebtn.setText(String.format(Locale.getDefault(), "%02d:%02d",hour, minute));
                 }
-                else {
-                    Toast.makeText(v.getContext(), "Successfully inserted event",Toast.LENGTH_SHORT).show();
-                    Button organizer_show_button = requireActivity().findViewById(R.id.organizer_show_button);
-                    organizer_show_button.performClick();
-                }
+            };
+
+            // int style = AlertDialog.THEME_HOLO_DARK;
+
+            TimePickerDialog timePickerDialog = new TimePickerDialog(v.getContext(), /*style,*/ onTimeSetListener, hour, minute, true);
+
+            timePickerDialog.setTitle("Select End Time");
+            timePickerDialog.show();
+        });
+
+        epostbutton.setOnClickListener(view -> {
+            startDate = startBtn.getText().toString();
+            endDate = endBtn.getText().toString();
+            try {
+                Date startDateFormatted = (new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.ENGLISH)).parse(startDate + " " + startTime);
+                Date endDateFormatted = (new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.ENGLISH)).parse(endDate + " " + endTime);
+                System.out.println(startDateFormatted + ", " + endDateFormatted);
+                Event event = new Event(ename.getText().toString(),
+                        edesc.getText().toString(),
+                        new Timestamp(startDateFormatted),
+                        new Timestamp(endDateFormatted),
+                        user_id);
+
+                fireDb.collection("Event")
+                        .add(event)
+                        .addOnSuccessListener(documentReference -> {
+                            Toast.makeText(requireContext(), "Event added successfully", Toast.LENGTH_SHORT).show();
+                            Button organizer_show_button = requireActivity().findViewById(R.id.organizer_show_button);
+                            organizer_show_button.performClick();
+                        })
+                        .addOnFailureListener(e -> {
+                            Toast.makeText(requireContext(), "Error adding event", Toast.LENGTH_SHORT).show();
+                        });
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
+//            boolean res = dbhelp.insertEvent(ename.getText().toString(), edesc.getText().toString(), startDate + " " + startTime, endDate + " " + endTime, id);
+//            if(!res) {
+//                Toast.makeText(v.getContext(), "Error in inserting",Toast.LENGTH_SHORT).show();
+//            }
+//            else {
+//                Toast.makeText(v.getContext(), "Successfully inserted event",Toast.LENGTH_SHORT).show();
+//
+//            }
         });
 
         return v;
@@ -216,7 +233,7 @@ public class Post_Event_Fragment extends Fragment {
         //datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
     }
 
-    private String getTodaysDate()
+    private String getTodayDate()
     {
         Calendar cal = Calendar.getInstance();
         int year = cal.get(Calendar.YEAR);

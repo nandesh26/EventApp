@@ -8,14 +8,22 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.eventapp.R;
+import com.example.eventapp.data.Database.Organizer;
+import com.example.eventapp.data.Database.Student;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -36,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     DBhelper db;
     RadioGroup typegrp;
     RadioButton usertype;
+    FirebaseFirestore fireDb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +57,9 @@ public class MainActivity extends AppCompatActivity {
         passData = findViewById(R.id.password);
         btnLogin = findViewById(R.id.login);
         db = new DBhelper(this);
+
+        fireDb = FirebaseFirestore.getInstance();
+
         typegrp = findViewById(R.id.type2);
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
@@ -58,7 +70,8 @@ public class MainActivity extends AppCompatActivity {
                 String type = usertype.getText().toString();
                 String username = nameData.getText().toString();
                 String password = passData.getText().toString();
-                db.checkUser(username,password,type);
+//                db.checkUser(username,password,type);
+                checkUser(username, password, type);
             }
         });
         btnSignUp.setOnClickListener(new View.OnClickListener() {
@@ -69,9 +82,52 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
     }
 
+    private void checkUser(String username, String password, String type) {
+        if (type.equals("Student")) {
+            DocumentReference studentRef = fireDb.collection("Student").document(username);
+            studentRef.get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        Student student = documentSnapshot.toObject(Student.class);
+                        if (student != null) {
+                            if (student.getPassword().equals(password)) {
+                                Toast.makeText(getApplicationContext(), "Student exists", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(getApplicationContext(), studentHome.class);
+                                intent.putExtra("student", student);
+                                startActivity(intent);
+                            }
+                            else {
+                                Toast.makeText(getApplicationContext(), "Wrong Password", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                        else {
+                            Toast.makeText(getApplicationContext(), "Student does not exist", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        }
+        else if (type.equals("Organizer")) {
+            DocumentReference studentRef = fireDb.collection("Organizer").document(username);
+            studentRef.get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        Organizer organizer = documentSnapshot.toObject(Organizer.class);
+                        if (organizer != null) {
+                            if (organizer.getPassword().equals(password)) {
+                                Toast.makeText(getApplicationContext(), "Organizer exists", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(getApplicationContext(), organizerHome.class);
+                                intent.putExtra("organizer", organizer);
+                                startActivity(intent);
+                            }
+                            else {
+                                Toast.makeText(getApplicationContext(), "Wrong Password", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                        else {
+                            Toast.makeText(getApplicationContext(), "Organizer does not exist", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        }
+    }
     /*
     private class ConnectMySql extends AsyncTask<String, Void, String> {
         String res = "";
