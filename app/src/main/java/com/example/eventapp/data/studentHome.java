@@ -5,6 +5,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -42,6 +43,7 @@ public class studentHome extends AppCompatActivity {
         student = i.getParcelableExtra("student");
 
         updateFragment(timeline, registeredEventsSwitch);
+        registeredEventsSwitch.setVisibility(View.GONE);
 
         System.out.println(registeredEventsSwitch.isChecked());
 

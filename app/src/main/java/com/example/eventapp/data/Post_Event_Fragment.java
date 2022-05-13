@@ -32,8 +32,7 @@ import java.util.Locale;
 public class Post_Event_Fragment extends Fragment {
 
     DatePickerDialog datePickerDialog;
-    EditText ename;
-    EditText edesc;
+    EditText ename, edesc, efee;
     Button epostbutton, startBtn, endBtn, startTimebtn, endTimebtn;
     DBhelper dbhelp;
     String startDate, endDate, startTime, endTime;
@@ -61,6 +60,7 @@ public class Post_Event_Fragment extends Fragment {
         dbhelp = new DBhelper(v.getContext());
         ename = (EditText) v.findViewById(R.id.ename);
         edesc = (EditText) v.findViewById(R.id.edesc);
+        efee = (EditText) v.findViewById(R.id.efee);
         epostbutton = (Button) v.findViewById(R.id.epostbutton);
         startBtn = v.findViewById(R.id.startDateBtn);
         endBtn = v.findViewById(R.id.endDateBtn);
@@ -163,7 +163,7 @@ public class Post_Event_Fragment extends Fragment {
                             edesc.getText().toString(),
                             new Timestamp(startDateFormatted),
                             new Timestamp(endDateFormatted),
-                            user_id);
+                            user_id, Integer.parseInt(String.valueOf(efee.getText())));
 
                     fireDb.collection("Event")
                             .document(event.getName())

@@ -8,14 +8,16 @@ public class Student implements Parcelable {
     private String name;
     private String password;
     private String email;
+    private Integer points;
 
     public Student() {}
 
-    public Student(String name, String username, String password, String email) {
+    public Student(String name, String username, String password, String email, Integer points) {
         this.username = username;
         this.name = name;
         this.password = password;
         this.email = email;
+        this.points = points;
     }
 
     protected Student(Parcel in) {
@@ -23,6 +25,7 @@ public class Student implements Parcelable {
         name = in.readString();
         password = in.readString();
         email = in.readString();
+        points = in.readInt();
     }
 
     public static final Creator<Student> CREATOR = new Creator<Student>() {
@@ -57,6 +60,8 @@ public class Student implements Parcelable {
         return password;
     }
 
+    public Integer getPoints() { return points; }
+
     public void setPassword(String password) {
         this.password = password;
     }
@@ -80,5 +85,6 @@ public class Student implements Parcelable {
         parcel.writeString(name);
         parcel.writeString(password);
         parcel.writeString(email);
+        parcel.writeInt(points);
     }
 }

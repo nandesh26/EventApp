@@ -59,7 +59,7 @@ public class EventPassFragment extends Fragment {
         qrCodeIV = v.findViewById(R.id.imageView);
 
         try {
-            Bitmap bimg = encodeAsBitmap(eventId + userName);
+            Bitmap bimg = encodeAsBitmap(eventId + "&&" + userName);
             qrCodeIV.setImageBitmap(bimg);
         } catch (WriterException e) {
             e.printStackTrace();

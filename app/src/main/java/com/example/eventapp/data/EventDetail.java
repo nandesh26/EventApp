@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 import com.example.eventapp.R;
 import com.example.eventapp.data.Database.Event;
 import com.example.eventapp.data.Database.Registration;
+import com.example.eventapp.data.Database.Student;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
@@ -22,7 +24,10 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.razorpay.Checkout;
+import com.razorpay.PaymentResultListener;
 
+import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 import java.text.DateFormat;
@@ -32,13 +37,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class EventDetail extends AppCompatActivity {
+public class EventDetail extends AppCompatActivity implements PaymentResultListener {
 
     private static final String TAG = "EventDetail";
 
     Button registerEventButton, showPassButton;
-    TextView eventNameText, instructionText, startDateText, endDateText, eventDescriptionText;
+    TextView eventNameText, instructionText, startDateText, endDateText, eventDescriptionText, feeText;
     FirebaseFirestore fireDb;
+    Event event;
+    int student_price;
 
     String eventId, userName;
 
@@ -46,6 +53,8 @@ public class EventDetail extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_detail);
+
+        Checkout.preload(getApplicationContext());
 
         registerEventButton = (Button) findViewById(R.id.register_event_btn);
         showPassButton = (Button) findViewById(R.id.show_event_pass_btn);
@@ -55,6 +64,7 @@ public class EventDetail extends AppCompatActivity {
         startDateText = (TextView) findViewById(R.id.start_date_text);
         endDateText = (TextView) findViewById(R.id.end_date_text);
         eventDescriptionText = (TextView) findViewById(R.id.event_description_text);
+        feeText = (TextView) findViewById(R.id.event_fee_text);
 
 //        if (savedInstanceState != null) {
 //            registerEventButton.setEnabled(savedInstanceState.getBoolean("register-event-button-enabled"));
@@ -77,7 +87,7 @@ public class EventDetail extends AppCompatActivity {
 //                    eventId = documentSnapshot.getId();
 //                    userName = details[1];
                     Timestamp now = Timestamp.now();
-                    Event event = documentSnapshot.toObject(Event.class);
+                    event = documentSnapshot.toObject(Event.class);
                     if (event.getEndDate().compareTo(now) < 0 || (event.getStartDate().compareTo(now) < 0 && event.getEndDate().compareTo(now) > 0)) {
                         Toast.makeText(getApplicationContext(), "Event Registration ended", Toast.LENGTH_SHORT).show();
                         instructionText.setText("Event Registration has been closed");
@@ -94,7 +104,21 @@ public class EventDetail extends AppCompatActivity {
 
                     startDateText.setText("Start: " + dateFormat.format(startDate));
                     endDateText.setText("End: " + dateFormat.format(endDate));
-
+                    int regFee = event.getTicketPrice();
+                    if(regFee > 0) {
+                        fireDb.collection("Student").document(userName)
+                                .get().addOnSuccessListener(documentSnapshot1 -> {
+                                    Student student = documentSnapshot1.toObject(Student.class);
+                                    int points = student.getPoints();
+                                    int price = event.getTicketPrice();
+                                    price = discountPrice(price, points);
+                                    student_price = price;
+                                    feeText.setText("Registration Fee: Rs." + String.valueOf(price) + "/-");
+                        });
+                    }
+                    else {
+                        feeText.setText("Free Registration !!");
+                        }
                     eventDescriptionText.setText((String) event.getDescription());
                 })
                 .addOnFailureListener(e -> {
@@ -153,16 +177,17 @@ public class EventDetail extends AppCompatActivity {
         registerEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Registration newRegistration = new Registration(userName, eventId);
-                fireDb.collection("Registration")
-                        .add(newRegistration)
+                startPayment();
+                /*Registration newRegistration = new Registration(userName, eventId);
+                fireDb.collection("Registration").document(userName + " " + eventId)
+                        .set(newRegistration)
                         .addOnSuccessListener(documentReference -> {
                             Toast.makeText(getApplicationContext(), "Event with " + eventId + " registered successfully", Toast.LENGTH_SHORT).show();
                             registerEventButton.setVisibility(View.GONE);
                             showPassButton.setVisibility(View.VISIBLE);
                         }).addOnFailureListener(e -> {
                             Toast.makeText(getApplicationContext(), "Error in registration", Toast.LENGTH_SHORT).show();
-                });
+                });*/
             }
         });
 
@@ -177,6 +202,82 @@ public class EventDetail extends AppCompatActivity {
 //                showPassButton.setVisibility(View.GONE);
             }
         });
+
+    }
+
+    private void startPayment(){
+
+        /**
+         * Instantiate Checkout
+         */
+        Checkout checkout = new Checkout();
+        checkout.setKeyID("rzp_test_esQHo3tQFg08BV");
+        /**
+         * Set your logo here
+         */
+        //checkout.setImage(R.drawable.logo);
+
+        /**
+         * Reference to current activity
+         */
+        final Activity activity = this;
+
+        /**
+         * Pass your payment options to the Razorpay Checkout as a JSONObject
+         */
+        try {
+            JSONObject options = new JSONObject();
+
+            options.put("name", event.getName());
+            options.put("description", event.getDescription());
+            options.put("image", "https://s3.amazonaws.com/rzp-mobile/images/rzp.png");
+            options.put("theme.color", "#3399cc");
+            options.put("currency", "INR");
+            options.put("amount", String.valueOf(student_price)+"00");//pass amount in currency subunits
+            JSONObject retryObj = new JSONObject();
+            retryObj.put("enabled", true);
+            retryObj.put("max_count", 4);
+            options.put("retry", retryObj);
+
+            checkout.open(activity, options);
+
+        } catch(Exception e) {
+            Log.e("TAG", "Error in starting Razorpay Checkout", e);
+        }
+    }
+
+    private int discountPrice(int price, int points) {
+        if (points >= 20) {
+            price = (int)Math.round(0.8*price);
+        }
+        else if (points >= 15) {
+            price = (int)Math.round(0.85*price);
+        }
+        else if (points >= 10) {
+            price = (int)Math.round(0.9*price);
+        }
+        else if (points >= 5) {
+            price = (int)Math.round(0.95*price);
+        }
+        return price;
+    }
+
+    @Override
+    public void onPaymentSuccess(String s) {
+        Registration newRegistration = new Registration(userName, eventId);
+        fireDb.collection("Registration").document(userName + " " + eventId)
+                .set(newRegistration)
+                .addOnSuccessListener(documentReference -> {
+                    Toast.makeText(getApplicationContext(), "Event with " + eventId + " registered successfully", Toast.LENGTH_SHORT).show();
+                    registerEventButton.setVisibility(View.GONE);
+                    showPassButton.setVisibility(View.VISIBLE);
+                }).addOnFailureListener(e -> {
+            Toast.makeText(getApplicationContext(), "Error in registration", Toast.LENGTH_SHORT).show();
+        });
+    }
+
+    @Override
+    public void onPaymentError(int i, String s) {
 
     }
 

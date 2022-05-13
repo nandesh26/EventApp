@@ -90,6 +90,16 @@
         android:maxLines="4"
         android:scrollHorizontally="false" />
 
+    <EditText
+        android:id="@+id/efee"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:ems="10"
+        android:hint="Registration Fee"
+        android:inputType="number" />
+
     <Button
         android:id="@+id/epostbutton"
 

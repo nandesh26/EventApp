@@ -13,15 +13,17 @@ public class Event implements Parcelable {
     private Timestamp startDate;
     private Timestamp endDate;
     private String organizer_id;
+    private Integer ticketPrice;
 
     public Event() {}
 
-    public Event(String name, String description, Timestamp startDate, Timestamp endDate, String org_id) {
+    public Event(String name, String description, Timestamp startDate, Timestamp endDate, String org_id, Integer ticketPrice) {
         this.name = name;
         this.description = description;
         this.startDate = startDate;
         this.endDate = endDate;
         organizer_id = org_id;
+        this.ticketPrice = ticketPrice;
     }
 
     protected Event(Parcel in) {
@@ -30,6 +32,7 @@ public class Event implements Parcelable {
         organizer_id = in.readString();
         startDate = new Timestamp(new Date(in.readLong()));
         endDate = new Timestamp(new Date(in.readLong()));
+        ticketPrice = in.readInt();
     }
 
     public static final Creator<Event> CREATOR = new Creator<Event>() {
@@ -51,6 +54,7 @@ public class Event implements Parcelable {
                 ", description='" + description + '\'' +
                 ", startDate='" + startDate + '\'' +
                 ", endDate='" + endDate + '\'' +
+                ", registrationFee='" + ticketPrice + '\'' +
                 '}';
     }
 
@@ -63,8 +67,8 @@ public class Event implements Parcelable {
                 && description.equals(e.description)
                 && startDate.equals(e.startDate)
                 && endDate.equals(e.endDate)
-                && organizer_id.equals((e.organizer_id));
-
+                && organizer_id.equals((e.organizer_id))
+                && ticketPrice.equals(e.ticketPrice);
     }
 
     @Override
@@ -108,6 +112,8 @@ public class Event implements Parcelable {
     public Timestamp getEndDate() {
         return endDate;
     }
+
+    public Integer getTicketPrice() { return ticketPrice; }
 
     public void setEndDate(Timestamp endDate) {
         this.endDate = endDate;

@@ -60,7 +60,7 @@ public class RegisterActivity extends AppCompatActivity {
 //                boolean res = db.insertStudent(name,username,email,password,userType.getText().toString());
 //                Map<String, Object> student = createUser(name, username, email, password);
             if (userType.equals("Student")) {
-                Student student = new Student(name, username, password, email);
+                Student student = new Student(name, username, password, email, 0);
                 DocumentReference studentRef = fireDb.collection("Student")
                                                      .document(username);
                 studentRef.get().addOnCompleteListener(task -> {
