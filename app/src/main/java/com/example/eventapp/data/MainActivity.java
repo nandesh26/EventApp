@@ -67,11 +67,17 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 int id = typegrp.getCheckedRadioButtonId();
                 usertype = findViewById(id);
-                String type = usertype.getText().toString();
                 String username = nameData.getText().toString();
                 String password = passData.getText().toString();
 //                db.checkUser(username,password,type);
-                checkUser(username, password, type);
+                if(username.equals("") || password.equals("") || usertype == null )
+                {
+                    Toast.makeText(getApplicationContext(), "Please enter missing details !!", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    String type = usertype.getText().toString();
+                    checkUser(username, password, type);
+                }
             }
         });
         btnSignUp.setOnClickListener(new View.OnClickListener() {
